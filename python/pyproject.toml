@@ -1,0 +1,29 @@
+[project]
+name = "scripts"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Italo Silva", email = "italo@maleldil.com"},
+]
+dependencies = [
+    "typer>=0.12.3",
+    "pandas>=2.2.1",
+    "tiktoken>=0.6.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "GPL-3.0-only"}
+
+[project.scripts]
+-ntok = "scripts.estimate_tokens:app"
+-confusion-matrix = "scripts.confusion_matrix:main"
+-dataclass-finder = "scripts.dataclass_finder:main"
+-json-keys = "scripts.json_keys:main"
+-json-to-table = "scripts.json_to_table:main"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
