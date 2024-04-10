@@ -51,27 +51,42 @@ def print_table(headers: list[str], values: list[list[Any]]) -> str:
     return "\n".join([header_line, separator_line, *rows])
 
 
-def render_data(info: dict[str, JSONKeyInfo], num_objects: int) -> list[list[str]]:
-    return [
-        [
+def render_data(
+    info: dict[str, JSONKeyInfo], num_objects: int, add_count: bool
+) -> list[list[str]]:
+    result: list[list[str]] = []
+    for k, v in info.items():
+        row = [
             k,
             ", ".join(sorted(v["type"])),
             "✗" if v["nullable"] else "✓",
-            f"{v['count']} ({v['count'] / num_objects * 100:.2f}%)",
         ]
-        for k, v in info.items()
-    ]
+        if add_count:
+            row.append(f"{v['count']} ({v['count'] / num_objects:.0%})")
+        result.append(row)
+    return result
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("file", type=argparse.FileType(), help="Path to the JSON file.")
+    parser.add_argument(
+        "--count",
+        "-c",
+        action="store_true",
+        help="Add the count of objects with the key.",
+    )
     args = parser.parse_args()
 
     data = json.load(args.file)
     info = analyze_json_file(data)
-    table = render_data(info, len(data))
-    print(print_table(["Name", "Type", "Nullable", "Count (% of total)"], table))
+    table = render_data(info, len(data), args.count)
+
+    headers = ["Name", "Type", "Nullable"]
+    if args.count:
+        headers.append("Count (% of total)")
+    print(print_table(headers, table))
+    print(f"\nTotal objects: {len(data)}")
 
 
 if __name__ == "__main__":
