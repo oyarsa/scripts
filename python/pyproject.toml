@@ -15,11 +15,11 @@ readme = "README.md"
 license = {text = "GPL-3.0-only"}
 
 [project.scripts]
--ntok = "scripts.estimate_tokens:app"
--confusion-matrix = "scripts.confusion_matrix:main"
--dataclass-finder = "scripts.dataclass_finder:main"
--json-keys = "scripts.json_keys:main"
--json-to-table = "scripts.json_to_table:main"
+",ntok" = "scripts.estimate_tokens:app"
+",confusion-matrix" = "scripts.confusion_matrix:main"
+",dataclass-finder" = "scripts.dataclass_finder:main"
+",json-keys" = "scripts.json_keys:main"
+",json-to-table" = "scripts.json_to_table:main"
 
 [build-system]
 requires = ["pdm-backend"]
