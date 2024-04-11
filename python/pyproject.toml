@@ -20,6 +20,7 @@ license = {text = "GPL-3.0-only"}
 ",dataclass-finder" = "scripts.dataclass_finder:main"
 ",json-keys" = "scripts.json_keys:main"
 ",json-to-table" = "scripts.json_to_table:main"
+",ll" = "scripts.listdir:main"
 
 [build-system]
 requires = ["pdm-backend"]
