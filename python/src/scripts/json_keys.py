@@ -59,7 +59,7 @@ def render_data(
         row = [
             k,
             ", ".join(sorted(v["type"])),
-            "✗" if v["nullable"] else "✓",
+            "✓" if v["nullable"] else "✗",
         ]
         if add_count:
             row.append(f"{v['count']} ({v['count'] / num_objects:.0%})")
