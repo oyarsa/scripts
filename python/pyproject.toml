@@ -21,6 +21,7 @@ license = {text = "GPL-3.0-only"}
 ",json-keys" = "scripts.json_keys:main"
 ",json-to-table" = "scripts.json_to_table:main"
 ",ll" = "scripts.listdir:main"
+",json-shuf" = "scripts.json_shuf:main"
 
 [build-system]
 requires = ["pdm-backend"]
