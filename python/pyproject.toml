@@ -22,10 +22,7 @@ license = {text = "GPL-3.0-only"}
 ",json-to-table" = "scripts.json_to_table:main"
 ",ll" = "scripts.listdir:main"
 ",json-shuf" = "scripts.json_shuf:main"
-
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+",find-default-args" = "scripts.find_default_args:main"
 
 [tool.pdm]
 distribution = true
