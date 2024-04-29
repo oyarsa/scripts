@@ -24,6 +24,7 @@ license = {text = "GPL-3.0-only"}
 ",json-shuf" = "scripts.json_shuf:main"
 ",find-default-args" = "scripts.find_default_args:main"
 ",tg-notify" = "scripts.tg_notify:main"
+",readtable" = "scripts.readtable:main"
 
 [tool.pdm]
 distribution = true
