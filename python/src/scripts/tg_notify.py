@@ -43,6 +43,12 @@ def main() -> None:
         help="The level of the message (default: %(default)s).",
     )
     parser.add_argument(
+        "--title",
+        type=str,
+        default=None,
+        help="The title of message. If not provided, the level is used.",
+    )
+    parser.add_argument(
         "--config",
         type=Path,
         default=Path("~/.config/telegram-notify/config.json").expanduser(),
@@ -54,8 +60,10 @@ def main() -> None:
     token = config["token"]
     chat_id = config["chatid"]
 
+    title = args.title or args.level.upper()
     emoji = level_emojis[args.level]
-    header = f"{emoji} {args.level.upper()} {emoji}"
+    header = f"{emoji} {title} {emoji}"
+
     message = args.message_file.read().strip()
     message = f"{header}\n\n{message}"
 
