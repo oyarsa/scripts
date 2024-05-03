@@ -22,15 +22,15 @@ def create_confusion_table(
         value2 = item.get(field2, "N/A")
         confusion_matrix[value1, value2] += 1
 
-    field1_values = sorted(set(f1 for f1, _ in confusion_matrix.keys()))
-    field2_values = sorted(set(f2 for _, f2 in confusion_matrix.keys()))
+    field1_values = sorted(set(f1 for f1, _ in confusion_matrix))
+    field2_values = sorted(set(f2 for _, f2 in confusion_matrix))
 
     table_data = [
         [confusion_matrix[(value1, value2)] for value2 in field2_values]
         for value1 in field1_values
     ]
 
-    df = pd.DataFrame(table_data, index=field1_values, columns=field2_values)
+    df = pd.DataFrame(table_data, index=field1_values, columns=field2_values)  # type: ignore
     df.index.name = field1
     df.columns.name = field2
 

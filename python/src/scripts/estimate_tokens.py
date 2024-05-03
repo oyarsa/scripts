@@ -1,5 +1,5 @@
-import typer
 import tiktoken
+import typer
 
 app = typer.Typer()
 

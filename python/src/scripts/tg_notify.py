@@ -16,15 +16,26 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import BinaryIO
+from typing import BinaryIO, NoReturn
 
 import requests
 
 level_emojis = {
-    "info": "ℹ️",
+    "info": "ℹ️",  # noqa: RUF001
     "warning": "⚠️",
     "error": "❌",
 }
+
+
+def log_error(source: str, response: requests.Response) -> NoReturn:
+    """Log an error message with the code and description, then terminates."""
+    try:
+        desc = response.json()["description"]
+    except json.JSONDecodeError:
+        desc = response.text
+
+    print(f"ERROR | {source} | {response.status_code} | {desc}")
+    sys.exit(1)
 
 
 def send_message(
@@ -50,7 +61,7 @@ def send_message(
         response = requests.post(url, data=data)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
-        print("ERROR", e.response.text)
+        log_error("send_message", e.response)
 
 
 def send_document(
@@ -70,14 +81,14 @@ def send_document(
     caption = f"{emoji} {caption or level.upper()} {emoji}"
 
     url = f"https://api.telegram.org/bot{token}/sendDocument"
-    params = {"chat_id": chat_id, "caption": caption}
-    files = {"document": document_file}
+    params = {"caption": caption}
+    files = {"chat_id": chat_id, "document": document_file}
 
     try:
         response = requests.post(url, data=params, files=files)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
-        print("ERROR", e.response.text)
+        log_error("send_document", e.response)
 
 
 def main() -> None:

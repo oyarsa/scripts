@@ -45,8 +45,8 @@ def parse_data(input: TextIO, separator: str) -> list[dict[str, Any]]:
     header = [item.strip() for item in lines[0].strip().split(separator)]
 
     data: list[dict[str, Any]] = []
-    for line in lines[1:]:
-        line = line.strip()
+    for line_ in lines[1:]:
+        line = line_.strip()
         if not line:
             continue
 

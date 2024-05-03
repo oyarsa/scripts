@@ -18,7 +18,7 @@ def analyze_json_file(data: list[dict[str, Any]]) -> dict[str, JSONKeyInfo]:
     )
 
     for obj in data:
-        for key in field_info.keys():
+        for key in field_info:
             if key not in obj or obj[key] is None:
                 field_info[key]["nullable"] = True
 
