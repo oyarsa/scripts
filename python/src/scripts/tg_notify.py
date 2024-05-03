@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Notify a message to a Telegram chat using a bot.
+"""Notify a message or send a document to a Telegram chat using a bot.
 
 Example configuration (~/.config/telegram-notify/config.json):
 {
@@ -15,9 +15,10 @@ https://api.telegram.org/bot<token>/getUpdates
 import argparse
 import json
 import sys
-import urllib.parse
-import urllib.request
 from pathlib import Path
+from typing import BinaryIO
+
+import requests
 
 level_emojis = {
     "info": "ℹ️",
@@ -26,14 +27,66 @@ level_emojis = {
 }
 
 
+def send_message(
+    token: str, chat_id: str, message: str, level: str, title: str | None
+) -> None:
+    """Send text message.
+
+    Args:
+        token: The Telegram bot token.
+        chat_id: The chat id.
+        message: The message content to send.
+        level: The log level of the message.
+        title: The title of the message. If not provided, the level is used.
+    """
+    emoji = level_emojis[level]
+    header = f"{emoji} {title or level.upper()} {emoji}"
+    message = f"{header}\n\n{message}"
+
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    data = {"chat_id": chat_id, "text": message}
+
+    try:
+        response = requests.post(url, data=data)
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        print("ERROR", e.response.text)
+
+
+def send_document(
+    token: str, chat_id: str, document_file: BinaryIO, level: str, caption: str | None
+) -> None:
+    """Send document.
+
+    Args:
+        token: The Telegram bot token.
+        chat_id: The chat id.
+        document_file: The file-like object of the document to send.
+        level: The log level of the document.
+        caption: The caption of the document. If not provided, the level is used.
+    """
+
+    emoji = level_emojis[level]
+    caption = f"{emoji} {caption or level.upper()} {emoji}"
+
+    url = f"https://api.telegram.org/bot{token}/sendDocument"
+    params = {"chat_id": chat_id, "caption": caption}
+    files = {"document": document_file}
+
+    try:
+        response = requests.post(url, data=params, files=files)
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        print("ERROR", e.response.text)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
-        "message_file",
-        type=argparse.FileType(),
-        nargs="?",
-        default=sys.stdin,
-        help="The file containing the message to send, or stdin if not provided.",
+        "--config",
+        type=Path,
+        default=Path("~/.config/telegram-notify/config.json").expanduser(),
+        help="The configuration file (default: %(default)s).",
     )
     parser.add_argument(
         "--level",
@@ -42,37 +95,50 @@ def main() -> None:
         default="info",
         help="The level of the message (default: %(default)s).",
     )
-    parser.add_argument(
+
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    message_parser = subparsers.add_parser("message", help="Send a message")
+    message_parser.add_argument(
+        "message_file",
+        type=argparse.FileType(),
+        nargs="?",
+        default=sys.stdin,
+        help="The file containing the message to send, or stdin if not provided.",
+    )
+    message_parser.add_argument(
         "--title",
         type=str,
         default=None,
         help="The title of message. If not provided, the level is used.",
     )
-    parser.add_argument(
-        "--config",
-        type=Path,
-        default=Path("~/.config/telegram-notify/config.json").expanduser(),
-        help="The configuration file (default: %(default)s).",
+
+    document_parser = subparsers.add_parser("document", help="Send a document")
+    document_parser.add_argument(
+        "document_file",
+        type=argparse.FileType("rb"),
+        nargs="?",
+        default=sys.stdin,
+        help="The document to send, or stdin if not provided.",
     )
+    document_parser.add_argument(
+        "--caption",
+        type=str,
+        default=None,
+        help="The caption of the document.",
+    )
+
     args = parser.parse_args()
 
     config = json.loads(args.config.read_text())
     token = config["token"]
     chat_id = config["chatid"]
 
-    title = args.title or args.level.upper()
-    emoji = level_emojis[args.level]
-    header = f"{emoji} {title} {emoji}"
-
-    message = args.message_file.read().strip()
-    message = f"{header}\n\n{message}"
-
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-    data = {"chat_id": chat_id, "text": message}
-    encoded_data = urllib.parse.urlencode(data).encode()
-
-    req = urllib.request.Request(url, data=encoded_data)
-    urllib.request.urlopen(req)
+    if args.command == "message":
+        message = args.message_file.read().strip()
+        send_message(token, chat_id, message, args.level, args.title)
+    elif args.command == "document":
+        send_document(token, chat_id, args.document_file, args.level, args.caption)
 
 
 if __name__ == "__main__":
