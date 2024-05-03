@@ -81,8 +81,8 @@ def send_document(
     caption = f"{emoji} {caption or level.upper()} {emoji}"
 
     url = f"https://api.telegram.org/bot{token}/sendDocument"
-    params = {"caption": caption}
-    files = {"chat_id": chat_id, "document": document_file}
+    params = {"chat_id": chat_id, "caption": caption}
+    files = {"document": document_file}
 
     try:
         response = requests.post(url, data=params, files=files)
