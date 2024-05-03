@@ -28,6 +28,7 @@ license = {text = "GPL-3.0-only"}
 ",tg-notify" = "scripts.tg_notify:main"
 ",readtable" = "scripts.readtable:main"
 ",count-hf-tokens" = "scripts.count_hf_tokens:main"
+",findimports" = "scripts.find_imports:main"
 
 [tool.pdm]
 distribution = true
