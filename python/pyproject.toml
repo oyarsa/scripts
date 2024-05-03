@@ -11,6 +11,7 @@ dependencies = [
     "tiktoken>=0.6.0",
     "transformers>=4.40.1",
     "requests>=2.31.0",
+    "tomli>=2.0.1",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -29,6 +30,7 @@ license = {text = "GPL-3.0-only"}
 ",readtable" = "scripts.readtable:main"
 ",count-hf-tokens" = "scripts.count_hf_tokens:main"
 ",findimports" = "scripts.find_imports:main"
+",toml2json" = "scripts.toml2json:main"
 
 [tool.pdm]
 distribution = true
