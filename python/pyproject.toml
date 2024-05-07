@@ -40,6 +40,7 @@ dev = [
     "ruff>=0.4.2",
     "pyright>=1.1.361",
 ]
+
 [tool.ruff.lint]
 select = [
 	"E",
@@ -65,3 +66,6 @@ ignore = [
 	"TRY003",   # Long messages outside exception class
 	"SIM108",   # Use ternary operation instead of if-else block
 ]
+
+[tool.pyright]
+typeCheckingMode = "strict"
