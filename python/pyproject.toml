@@ -31,6 +31,7 @@ license = {text = "GPL-3.0-only"}
 ",count-hf-tokens" = "scripts.count_hf_tokens:main"
 ",findimports" = "scripts.find_imports:main"
 ",toml2json" = "scripts.toml2json:main"
+",matchdeps" = "scripts.match_deps:main"
 
 [tool.pdm]
 distribution = true
