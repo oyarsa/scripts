@@ -111,11 +111,10 @@ def main() -> None:
 
     message_parser = subparsers.add_parser("message", help="Send a message")
     message_parser.add_argument(
-        "message_file",
-        type=argparse.FileType(),
+        "message",
+        type=str,
         nargs="?",
-        default=sys.stdin,
-        help="The file containing the message to send, or stdin if not provided.",
+        help="The message to send. If not provided or empty, read from stdin.",
     )
     message_parser.add_argument(
         "--title",
@@ -146,7 +145,7 @@ def main() -> None:
     chat_id = config["chatid"]
 
     if args.command == "message":
-        message = args.message_file.read().strip()
+        message = args.message or sys.stdin.read().strip()
         send_message(token, chat_id, message, args.level, args.title)
     elif args.command == "document":
         send_document(token, chat_id, args.document_file, args.level, args.caption)
