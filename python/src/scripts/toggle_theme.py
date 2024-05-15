@@ -24,13 +24,13 @@ import yaml
 config_files = {
     # Neovim
     "~/.config/nvim/lua/config/plugins.lua": {
-        "light": 'theme = "catppuccin-latte"',
-        "dark": 'theme = "catppuccin-mocha"',
+        "light": 'theme = "latte"',
+        "dark": 'theme = "mocha"',
     },
     # Kitty
     "~/.config/kitty/kitty.conf": {
-        "light": "Catppuccin Latte",
-        "dark": "Catppuccin Mocha",
+        "light": "Catppuccin-Latte",
+        "dark": "Catppuccin-Mocha",
     },
     # Delta
     "~/.config/git/config": {
@@ -39,18 +39,18 @@ config_files = {
     },
     # Tmux
     "~/.config/tmux/tmux.conf": {
-        "light": 'catppuccin_flavour = "latte"',
-        "dark": 'catppuccin_flavour = "mocha"',
+        "light": "catppuccin_flavour = 'latte'",
+        "dark": "catppuccin_flavour = 'mocha'",
     },
     # Fzf/fd/eza/LS_COLORS-supporting programs
     "~/.config/fish/conf.d/colours.fish": {
-        "light": "theme catppuccin-latte",
-        "dark": "theme catppuccin-mocha",
+        "light": "IS_COLOUR_THEME catppuccin-latte",
+        "dark": "IS_COLOUR_THEME catppuccin-mocha",
     },
     # Bat
     "~/.config/bat/config": {
-        "light": 'theme="Catppuccin Latte',
-        "dark": 'theme="Catppuccin Mocha',
+        "light": 'theme="Catppuccin Latte"',
+        "dark": 'theme="Catppuccin Mocha"',
     },
 }
 
@@ -67,13 +67,13 @@ def fish_theme(theme: str) -> None:
 
 def lazygit_theme(theme: str) -> None:
     """Read theme from a file and updates the config file's `gui` key."""
-    config_path = Path("~/.config/lazygit").expanduser()
+    config_dir = Path("~/.config/lazygit").expanduser()
 
-    config = yaml.safe_load((config_path / "config.yml").read_text())
-    theme = yaml.safe_load((config_path / "themes" / f"{theme}.yml").read_text())
+    config = yaml.safe_load((config_dir / "config.yml").read_text())
+    theme = yaml.safe_load((config_dir / "themes" / f"{theme}.yml").read_text())
 
     config["gui"] = theme
-    config_path.write_text(yaml.dump(config))
+    config_dir.write_text(yaml.dump(config))
 
 
 # Conifgurations that can't be done by simple string replacement
