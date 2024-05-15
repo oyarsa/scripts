@@ -12,6 +12,7 @@ dependencies = [
     "transformers>=4.40.1",
     "requests>=2.31.0",
     "tomli>=2.0.1",
+    "pyyaml>=6.0.1",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -32,6 +33,7 @@ license = {text = "GPL-3.0-only"}
 ",findimports" = "scripts.find_imports:main"
 ",toml2json" = "scripts.toml2json:main"
 ",matchdeps" = "scripts.match_deps:main"
+",toggle-theme" = "scripts.toggle_theme:main"
 
 [tool.pdm]
 distribution = true
