@@ -7,19 +7,27 @@ import ast
 import subprocess
 import sys
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
+
+
+@dataclass
+class Class:
+    filename: Path
+    lineno: int
+    name: str
 
 
 @dataclass
 class ClassFinder(ast.NodeVisitor):
     filename: Path
+    classes: list[Class] = field(default_factory=list)
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802
         if is_non_traditional_class(node):
             return
 
-        print(f"{self.filename}:{node.lineno}\t{node.name}")
+        self.classes.append(Class(self.filename, node.lineno, node.name))
 
 
 def do_exprs_match(exprs: list[ast.expr], base_cls: str) -> bool:
@@ -39,10 +47,11 @@ def is_non_traditional_class(node: ast.ClassDef) -> bool:
     return is_dataclass or is_other_class
 
 
-def find_classes_in_file(filename: Path) -> None:
+def find_classes_in_file(filename: Path) -> list[Class]:
     node = ast.parse(filename.read_text(), filename=filename)
     class_finder = ClassFinder(filename)
     class_finder.visit(node)
+    return class_finder.classes
 
 
 def find_python_files(directory: Path) -> Iterable[Path]:
@@ -62,12 +71,19 @@ def find_python_files(directory: Path) -> Iterable[Path]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("dir", type=Path, help="Directory to search")
-
+    parser.add_argument("dirs", type=Path, nargs="+", help="Directory to search")
     args = parser.parse_args()
 
-    for file in find_python_files(args.dir):
-        find_classes_in_file(file)
+    dirs: list[Path] = args.dirs
+    classes = [
+        class_
+        for dir in dirs
+        for file in find_python_files(dir)
+        for class_ in find_classes_in_file(file)
+    ]
+
+    for class_ in classes:
+        print(f"{class_.filename}:{class_.lineno}\t{class_.name}")
 
 
 if __name__ == "__main__":
