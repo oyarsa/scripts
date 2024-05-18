@@ -69,11 +69,12 @@ def lazygit_theme(theme: str) -> None:
     """Read theme from a file and updates the config file's `gui` key."""
     config_dir = Path("~/.config/lazygit").expanduser()
 
-    config = yaml.safe_load((config_dir / "config.yml").read_text())
+    config_path = config_dir / "config.yml"
+    config = yaml.safe_load(config_path.read_text())
     theme = yaml.safe_load((config_dir / "themes" / f"{theme}.yml").read_text())
 
     config["gui"] = theme
-    config_dir.write_text(yaml.dump(config))
+    config_path.write_text(yaml.dump(config))
 
 
 # Conifgurations that can't be done by simple string replacement
@@ -95,7 +96,8 @@ class Theme(Enum):
 
 
 def replace_in_file(file_path: Path, old: str, new: str) -> int:
-    content = file_path.expanduser().read_text()
+    file_path = file_path.expanduser()
+    content = file_path.read_text()
     count = content.count(old)
     changed = content.replace(old, new)
     file_path.write_text(changed)
