@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"Find classes that are not dataclasses or NamedTuples in the directory."
+"""Find classes that are not dataclasses, NamedTuples, Enums, or TypedDicts."""
+
 # pyright: basic
 import argparse
 import ast
@@ -13,37 +14,34 @@ from pathlib import Path
 @dataclass
 class ClassFinder(ast.NodeVisitor):
     filename: Path
-    add_filename: bool
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # noqa: N802
-        if is_dataclass_or_namedtuple(node):
+        if is_non_traditional_class(node):
             return
 
-        if self.add_filename:
-            print(f"{self.filename}\t{node.name}")
-        else:
-            print(node.name)
+        print(f"{self.filename}:{node.lineno}\t{node.name}")
 
 
-def is_dataclass_or_namedtuple(node: ast.ClassDef) -> bool:
-    is_dataclass = any(
-        (isinstance(decorator, ast.Name) and decorator.id == "dataclass")
-        or (isinstance(decorator, ast.Attribute) and decorator.attr == "dataclass")
-        for decorator in node.decorator_list
+def do_exprs_match(exprs: list[ast.expr], base_cls: str) -> bool:
+    return any(
+        (isinstance(base, ast.Name) and base.id == base_cls)
+        or (isinstance(base, ast.Attribute) and base.attr == base_cls)
+        for base in exprs
     )
 
-    is_namedtuple = any(
-        (isinstance(base, ast.Name) and base.id == "NamedTuple")
-        or (isinstance(base, ast.Attribute) and base.attr == "NamedTuple")
-        for base in node.bases
+
+def is_non_traditional_class(node: ast.ClassDef) -> bool:
+    is_dataclass = do_exprs_match(node.decorator_list, "dataclass")
+    is_other_class = any(
+        do_exprs_match(node.bases, base) for base in ["NamedTuple", "Enum", "TypedDict"]
     )
 
-    return is_dataclass or is_namedtuple
+    return is_dataclass or is_other_class
 
 
-def find_classes_in_file(filename: Path, add_filename: bool) -> None:
+def find_classes_in_file(filename: Path) -> None:
     node = ast.parse(filename.read_text(), filename=filename)
-    class_finder = ClassFinder(filename, add_filename)
+    class_finder = ClassFinder(filename)
     class_finder.visit(node)
 
 
@@ -52,35 +50,24 @@ def find_python_files(directory: Path) -> Iterable[Path]:
         git_files = subprocess.check_output(
             ["git", "-C", directory, "ls-files", "*.py"], text=True
         )
-        for file in git_files.splitlines():
-            full_path = directory / file
-            if full_path.is_file():
-                yield full_path
     except subprocess.CalledProcessError:
         print("Error: Make sure you are in a Git repository")
         sys.exit(1)
 
-
-def find_non_dataclasses(directory: Path, add_filename: bool) -> None:
-    for file in find_python_files(directory):
-        find_classes_in_file(file, add_filename)
+    for file in git_files.splitlines():
+        full_path = directory / file
+        if full_path.is_file():
+            yield full_path
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "dir",
-        type=Path,
-        default=Path("."),
-        nargs="?",
-        help="Directory to search (default: current directory)",
-    )
-    parser.add_argument(
-        "--add-filename", action="store_true", help="Add filename to the output"
-    )
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("dir", type=Path, help="Directory to search")
 
     args = parser.parse_args()
-    find_non_dataclasses(args.dir, args.add_filename)
+
+    for file in find_python_files(args.dir):
+        find_classes_in_file(file)
 
 
 if __name__ == "__main__":
