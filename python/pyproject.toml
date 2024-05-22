@@ -13,6 +13,7 @@ dependencies = [
     "requests>=2.31.0",
     "tomli>=2.0.1",
     "pyyaml>=6.0.1",
+    "openai>=1.30.1",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -34,6 +35,7 @@ license = {text = "GPL-3.0-only"}
 ",toml2json" = "scripts.toml2json:main"
 ",matchdeps" = "scripts.match_deps:main"
 ",toggle-theme" = "scripts.toggle_theme:main"
+",rungpt" = "scripts.rungpt:main"
 
 [tool.pdm]
 distribution = true
