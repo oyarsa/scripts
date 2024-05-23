@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 "Obtain information about the keys of a JSON file containing a list of objects."
+
 import argparse
 import json
 from collections import defaultdict
@@ -30,7 +31,7 @@ def analyze_json_file(data: list[dict[str, Any]]) -> dict[str, JSONKeyInfo]:
     return field_info
 
 
-def print_table(headers: list[str], values: list[list[Any]]) -> str:
+def print_table(title: str, headers: list[str], values: list[list[Any]]) -> str:
     # Calculate the maximum length for each column, considering both headers and the
     # data in values
     max_lengths = [
@@ -48,7 +49,7 @@ def print_table(headers: list[str], values: list[list[Any]]) -> str:
     separator_line = " | ".join("-" * length for length in max_lengths)
     rows = [format_row(row) for row in values]
 
-    return "\n".join([header_line, separator_line, *rows])
+    return "\n".join([title, header_line, separator_line, *rows])
 
 
 def render_data(
@@ -69,7 +70,9 @@ def render_data(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("file", type=argparse.FileType(), help="Path to the JSON file.")
+    parser.add_argument(
+        "files", type=argparse.FileType("r"), nargs="+", help="Paths to the JSON files."
+    )
     parser.add_argument(
         "--count",
         "-c",
@@ -78,15 +81,16 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    data = json.load(args.file)
-    info = analyze_json_file(data)
-    table = render_data(info, len(data), args.count)
+    for file in args.files:
+        data = json.load(file)
+        info = analyze_json_file(data)
+        table = render_data(info, len(data), args.count)
 
-    headers = ["Name", "Type", "Nullable"]
-    if args.count:
-        headers.append("Count (% of total)")
-    print(print_table(headers, table))
-    print(f"\nTotal objects: {len(data)}")
+        headers = ["Name", "Type", "Nullable"]
+        if args.count:
+            headers.append("Count (% of total)")
+        print(print_table(file.name, headers, table))
+        print(f"\nTotal objects: {len(data)}\n")
 
 
 if __name__ == "__main__":
