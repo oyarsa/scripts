@@ -95,14 +95,15 @@ def main() -> None:
         "--path",
         "-p",
         type=str,
-        default=".",
+        default=None,
         help="Path to the key in the JSON object. Example: 'data.attributes'",
     )
     args = parser.parse_args()
 
     for file in args.files:
         data = json.load(file)
-        data = get_path(data, args.path)
+        if args.path:
+            data = get_path(data, args.path)
         info = analyze_json_file(data)
         table = render_data(info, len(data), args.count)
 
