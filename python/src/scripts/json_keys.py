@@ -31,7 +31,9 @@ def analyze_json_file(data: list[dict[str, Any]]) -> dict[str, JSONKeyInfo]:
     return field_info
 
 
-def print_table(title: str, headers: list[str], values: list[list[Any]]) -> str:
+def print_table(
+    title: str, headers: list[str], values: list[list[Any]], n_items: int
+) -> str:
     # Calculate the maximum length for each column, considering both headers and the
     # data in values
     max_lengths = [
@@ -49,6 +51,7 @@ def print_table(title: str, headers: list[str], values: list[list[Any]]) -> str:
     separator_line = " | ".join("-" * length for length in max_lengths)
     rows = [format_row(row) for row in values]
 
+    title = f"{title}: {n_items} items"
     return "\n".join([title, header_line, separator_line, *rows])
 
 
@@ -68,6 +71,15 @@ def render_data(
     return result
 
 
+def get_path(data: dict[str, Any], path: str) -> Any:
+    parts = path.split(".")
+    for part in parts:
+        if part not in data:
+            return None
+        data = data[part]
+    return data
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -79,18 +91,25 @@ def main() -> None:
         action="store_true",
         help="Add the count of objects with the key.",
     )
+    parser.add_argument(
+        "--path",
+        "-p",
+        type=str,
+        default=".",
+        help="Path to the key in the JSON object. Example: 'data.attributes'",
+    )
     args = parser.parse_args()
 
     for file in args.files:
         data = json.load(file)
+        data = get_path(data, args.path)
         info = analyze_json_file(data)
         table = render_data(info, len(data), args.count)
 
         headers = ["Name", "Type", "Nullable"]
         if args.count:
             headers.append("Count (% of total)")
-        print(print_table(file.name, headers, table))
-        print(f"\nTotal objects: {len(data)}\n")
+        print(print_table(file.name, headers, table, len(data)), end="\n\n")
 
 
 if __name__ == "__main__":
