@@ -110,7 +110,7 @@ def main() -> None:
             data = get_path(data, args.path)
 
         if not is_bearable(data, list[dict[str, Any]]):
-            print(f"{file.name}: Invalid JSON format. Should be a list of objects.")
+            print(f"{file.name}: Invalid JSON format. Expected a list of objects.")
             continue
 
         info = analyze_json_file(data)

@@ -48,7 +48,7 @@ def main():
 
     data = json.load(args.file)
     if not is_bearable(data, list[dict[str, Any]]):
-        raise ValueError("The JSON file should contain a list of dictionaries")
+        raise ValueError("Invalid JSON format. Expected a list of objects.")
 
     table = create_confusion_table(data, args.field1, args.field2)
     print(table)

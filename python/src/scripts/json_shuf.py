@@ -44,7 +44,7 @@ def main() -> None:
         data = json.loads(args.input.read_text())
 
     if not is_bearable(data, list[Any]):
-        raise ValueError("Expected a JSON list.")
+        raise ValueError("Invalid JSON format. Expected a list.")
 
     random.seed(args.seed)
     random.shuffle(data)

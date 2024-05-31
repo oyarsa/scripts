@@ -66,7 +66,7 @@ def main() -> None:
 
     data = json.load(args.file)
     if not is_bearable(data, list[dict[str, Any]]):
-        raise ValueError("The JSON data must be a list of dictionaries.")
+        raise ValueError("Invalid JSON format. Expected a list of objects.")
 
     headers = list(data[0].keys())
 

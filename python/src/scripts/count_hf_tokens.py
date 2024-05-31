@@ -36,7 +36,7 @@ def main() -> None:
 
     data = json.load(args.input)
     if not is_bearable(data, list[dict[str, Any]]):
-        raise ValueError("Invalid input data. Should be a list of dictionaries.")
+        raise ValueError("Invalid JSON format. Expected a list of objects.")
 
     longest_seq = longest_sequence(args.model_name, data)
     print(f"{len(longest_seq)} tokens.")
