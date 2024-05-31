@@ -4,29 +4,33 @@
 import argparse
 import json
 from collections import defaultdict
-from typing import Any, TypedDict
+from dataclasses import dataclass
+from typing import Any
+
+from beartype.door import is_bearable
 
 
-class JSONKeyInfo(TypedDict):
+@dataclass
+class JSONKeyInfo:
     count: int
-    type: set[str]
+    type_: set[str]
     nullable: bool
 
 
 def analyze_json_file(data: list[dict[str, Any]]) -> dict[str, JSONKeyInfo]:
     field_info: dict[str, JSONKeyInfo] = defaultdict(
-        lambda: {"count": 0, "type": set(), "nullable": False}
+        lambda: JSONKeyInfo(0, set(), False)
     )
 
     for obj in data:
         for key in field_info:
-            if key not in obj or obj[key] is None:
-                field_info[key]["nullable"] = True
+            if obj.get(key) is None:
+                field_info[key].nullable = True
 
         for key, value in obj.items():
             if value is not None:
-                field_info[key]["count"] += 1
-                field_info[key]["type"].add(type(value).__name__)
+                field_info[key].count += 1
+                field_info[key].type_.add(type(value).__name__)
 
     return field_info
 
@@ -62,18 +66,17 @@ def render_data(
     for k, v in info.items():
         row = [
             k,
-            ", ".join(sorted(v["type"])),
-            "✓" if v["nullable"] else "✗",
+            ", ".join(sorted(v.type_)),
+            "✓" if v.nullable else "✗",
         ]
         if add_count:
-            row.append(f"{v['count']} ({v['count'] / num_objects:.0%})")
+            row.extend([str(v.count), f"{v.count / num_objects:.0%}"])
         result.append(row)
     return result
 
 
 def get_path(data: dict[str, Any], path: str) -> Any:
-    parts = path.split(".")
-    for part in parts:
+    for part in path.split("."):
         if part not in data:
             return None
         data = data[part]
@@ -96,7 +99,8 @@ def main() -> None:
         "-p",
         type=str,
         default=None,
-        help="Path to the key in the JSON object. Example: 'data.attributes'",
+        help="Path to the key in the JSON object. Example: 'data.attributes'."
+        " Applied to all files.",
     )
     args = parser.parse_args()
 
@@ -104,12 +108,17 @@ def main() -> None:
         data = json.load(file)
         if args.path:
             data = get_path(data, args.path)
+
+        if not is_bearable(data, list[dict[str, Any]]):
+            print(f"{file.name}: Invalid JSON format. Should be a list of objects.")
+            continue
+
         info = analyze_json_file(data)
         table = render_data(info, len(data), args.count)
 
         headers = ["Name", "Type", "Nullable"]
         if args.count:
-            headers.append("Count (% of total)")
+            headers.extend(["Count", "%"])
         print(print_table(file.name, headers, table, len(data)), end="\n\n")
 
 
