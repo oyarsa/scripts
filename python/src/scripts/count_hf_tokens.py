@@ -5,6 +5,7 @@ from typing import Any, cast
 
 # Disable "None of PyTorch, TensorFlow >= 2.0, or Flax have been found." warning.
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
+from beartype.door import is_bearable
 from transformers import AutoTokenizer  # noqa: E402
 
 
@@ -34,6 +35,9 @@ def main() -> None:
     args = parser.parse_args()
 
     data = json.load(args.input)
+    if not is_bearable(data, list[dict[str, Any]]):
+        raise ValueError("Invalid input data. Should be a list of dictionaries.")
+
     longest_seq = longest_sequence(args.model_name, data)
     print(f"{len(longest_seq)} tokens.")
     print(longest_seq)

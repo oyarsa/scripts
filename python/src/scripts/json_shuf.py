@@ -11,6 +11,9 @@ import json
 import random
 import sys
 from pathlib import Path
+from typing import Any
+
+from beartype.door import is_bearable
 
 
 def main() -> None:
@@ -40,8 +43,8 @@ def main() -> None:
     else:
         data = json.loads(args.input.read_text())
 
-    if not isinstance(data, list):
-        print("Shuffle requires the JSON to be a list", file=sys.stderr)
+    if not is_bearable(data, list[Any]):
+        raise ValueError("Expected a JSON list.")
 
     random.seed(args.seed)
     random.shuffle(data)

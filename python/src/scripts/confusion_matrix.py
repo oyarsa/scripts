@@ -4,12 +4,14 @@
 Dependencies:
 - pandas
 """
+
 import argparse
 import json
 from collections import defaultdict
 from typing import Any
 
 import pandas as pd
+from beartype.door import is_bearable
 
 
 def create_confusion_table(
@@ -45,6 +47,9 @@ def main():
     args = parser.parse_args()
 
     data = json.load(args.file)
+    if not is_bearable(data, list[dict[str, Any]]):
+        raise ValueError("The JSON file should contain a list of dictionaries")
+
     table = create_confusion_table(data, args.field1, args.field2)
     print(table)
 

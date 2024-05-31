@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 "Convert JSON to Markdown table."
+
 import argparse
 import json
 from typing import Any
+
+from beartype.door import is_bearable
 
 
 def generate_table(headers: list[str], values: list[list[Any]]) -> str:
@@ -62,10 +65,14 @@ def main() -> None:
     args = parser.parse_args()
 
     data = json.load(args.file)
+    if not is_bearable(data, list[dict[str, Any]]):
+        raise ValueError("The JSON data must be a list of dictionaries.")
+
     headers = list(data[0].keys())
 
+    fmt_: list[str] = args.fmt
     formats: dict[str, str] = {}
-    for fmt_option in args.fmt or []:
+    for fmt_option in fmt_ or []:
         fmt, columns = fmt_option[0], fmt_option[1:]
         for column in columns:
             formats[column] = fmt
