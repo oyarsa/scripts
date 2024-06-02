@@ -1,11 +1,24 @@
+"""Calculate the number of tokens for items in a datasetm using a Hugging Face model.
+
+By default, the script prints the number of tokens in the longest sequence. It can
+also print the longest sequence itself.
+
+It can also save a new JSON file with the added token count for each item.
+
+The input format a JSON file with a list of objects. Each object must have an "input"
+key with the text to tokenise.
+"""
+
+# pyright: basic
 import argparse
 import json
 import os
 from typing import Any, cast
 
+from beartype.door import is_bearable
+
 # Disable "None of PyTorch, TensorFlow >= 2.0, or Flax have been found." warning.
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
-from beartype.door import is_bearable
 from transformers import AutoTokenizer  # noqa: E402
 
 
@@ -23,7 +36,9 @@ def longest_sequence(model_name: str, data: list[dict[str, Any]]) -> list[str]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawTextHelpFormatter
+    )
     parser.add_argument("model_name", type=str, help="Model name")
     parser.add_argument(
         "input",
