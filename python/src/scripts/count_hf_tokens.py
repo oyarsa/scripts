@@ -41,8 +41,12 @@ def main() -> None:
     args = parser.parse_args()
 
     data = json.load(args.input)
+
+    data_keys = {"input"}
     if not is_bearable(data, list[dict[str, Any]]):
-        raise ValueError("Invalid JSON format. Expected a list of objects.")
+        raise SystemExit("Invalid JSON format. Expected a list of objects.")
+    if missing := data_keys - data[0].keys():
+        raise SystemExit(f"Invalid JSON format. Missing keys: {missing}.")
 
     longest_seq = longest_sequence(args.model_name, data)
 
