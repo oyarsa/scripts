@@ -32,6 +32,12 @@ def main() -> None:
         nargs="?",
         default="-",
     )
+    parser.add_argument(
+        "--print-sequence",
+        "-P",
+        help="Print the longest sequence",
+        action="store_true",
+    )
     args = parser.parse_args()
 
     data = json.load(args.input)
@@ -39,8 +45,10 @@ def main() -> None:
         raise ValueError("Invalid JSON format. Expected a list of objects.")
 
     longest_seq = longest_sequence(args.model_name, data)
+
+    if args.print_sequence:
+        print(longest_seq)
     print(f"{len(longest_seq)} tokens.")
-    print(longest_seq)
 
 
 if __name__ == "__main__":
