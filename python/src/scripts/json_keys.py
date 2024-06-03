@@ -111,6 +111,9 @@ def main() -> None:
 
         if not is_bearable(data, list[dict[str, Any]]):
             print(f"{file.name}: Invalid JSON format. Expected a list of objects.")
+            if is_bearable(data, dict[str, Any]):
+                print("Found object with keys:", ", ".join(repr(k) for k in data))
+                print("Use --path/-p with one of these keys.")
             continue
 
         info = analyze_json_file(data)
