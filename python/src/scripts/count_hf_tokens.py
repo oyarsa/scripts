@@ -22,17 +22,21 @@ os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 from transformers import AutoTokenizer  # noqa: E402
 
 
-def longest_sequence(model_name: str, data: list[dict[str, Any]]) -> list[str]:
+def longest_sequence(
+    model_name: str, data: list[dict[str, Any]]
+) -> tuple[list[str], list[str]]:
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     longest_seq: list[str] | None = None
+    longest_split: list[str] | None = None
 
     for item in data:
         tokens = tokenizer.tokenize(item["input"].strip())
         if longest_seq is None or len(tokens) > len(longest_seq):
             longest_seq = cast(list[str], tokens)
+            longest_split = item["input"].strip().split()
 
-    assert longest_seq is not None, "No data provided."
-    return longest_seq
+    assert longest_seq is not None and longest_split is not None, "No data provided."
+    return longest_seq, longest_split
 
 
 def main() -> None:
@@ -63,11 +67,12 @@ def main() -> None:
     if missing := data_keys - data[0].keys():
         raise SystemExit(f"Invalid JSON format. Missing keys: {missing}.")
 
-    longest_seq = longest_sequence(args.model_name, data)
+    longest_seq, longest_split = longest_sequence(args.model_name, data)
 
     if args.print_sequence:
         print(longest_seq)
     print(f"{len(longest_seq)} tokens.")
+    print(f"{len(longest_split)} tokens (split).")
 
 
 if __name__ == "__main__":
