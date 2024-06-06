@@ -3,6 +3,8 @@
 
 import argparse
 import json
+import os
+import sys
 from typing import Any
 
 from beartype.door import is_bearable
@@ -85,7 +87,19 @@ def main() -> None:
         for row in data
     ]
 
-    print(generate_table(headers, values))
+    # Handle SIGPIPE from head/tail/etc.
+    # From https://docs.python.org/3/library/signal.html#note-on-sigpipe
+    try:
+        print(generate_table(headers, values))
+        # flush output here to force SIGPIPE to be triggered
+        # while inside this try block.
+        sys.stdout.flush()
+    except BrokenPipeError:
+        # Python flushes standard streams on exit; redirect remaining output
+        # to devnull to avoid another BrokenPipeError at shutdown
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, sys.stdout.fileno())
+        sys.exit(1)  # Python exits with error code 1 on EPIPE
 
 
 if __name__ == "__main__":
