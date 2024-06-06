@@ -37,6 +37,7 @@ license = {text = "GPL-3.0-only"}
 ",matchdeps" = "scripts.match_deps:main"
 ",toggle-theme" = "scripts.toggle_theme:main"
 ",rungpt" = "scripts.rungpt:main"
+",function-info" = "scripts.function_info:main"
 
 [tool.pdm]
 distribution = true
