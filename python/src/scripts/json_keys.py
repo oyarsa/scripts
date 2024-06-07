@@ -3,6 +3,7 @@
 
 import argparse
 import json
+import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
@@ -86,7 +87,11 @@ def get_path(data: dict[str, Any], path: str) -> Any:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "files", type=argparse.FileType("r"), nargs="+", help="Paths to the JSON files."
+        "files",
+        type=argparse.FileType("r"),
+        nargs="*",
+        default=[sys.stdin],
+        help="Paths to the JSON files.",
     )
     parser.add_argument(
         "--count",
