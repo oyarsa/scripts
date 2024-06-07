@@ -43,13 +43,18 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("model_name", type=str, help="Model name")
     parser.add_argument(
         "input",
         type=argparse.FileType("r"),
         help="Input file path",
         nargs="?",
         default="-",
+    )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="google/flan-t5-large",
+        help="Model name. Default: %(default)s.",
     )
     parser.add_argument(
         "--print-sequence",
@@ -67,7 +72,7 @@ def main() -> None:
     if missing := data_keys - data[0].keys():
         raise SystemExit(f"Invalid JSON format. Missing keys: {missing}.")
 
-    longest_seq, longest_split = longest_sequence(args.model_name, data)
+    longest_seq, longest_split = longest_sequence(args.model, data)
 
     if args.print_sequence:
         print(longest_seq)
