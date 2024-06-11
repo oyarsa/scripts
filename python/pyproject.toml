@@ -38,6 +38,7 @@ license = {text = "GPL-3.0-only"}
 ",toggle-theme" = "scripts.toggle_theme:main"
 ",rungpt" = "scripts.rungpt:main"
 ",function-info" = "scripts.function_info:main"
+",rename-json" = "scripts.rename_json:main"
 
 [tool.pdm]
 distribution = true
