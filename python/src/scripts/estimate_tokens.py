@@ -8,7 +8,7 @@ encoding = tiktoken.get_encoding("cl100k_base")
 
 
 @app.command()
-def calculate(file: typer.FileText = typer.Argument(..., help="Path to the file")):
+def calculate(file: typer.FileText = typer.Argument("-", help="Path to the file")):
     """Calculates a more accurate GPT-4 token count of a text file using tiktoken."""
     text = file.read()
     tokens = encoding.encode(text)
