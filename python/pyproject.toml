@@ -39,6 +39,7 @@ license = {text = "GPL-3.0-or-later"}
 ",rungpt" = "scripts.rungpt:main"
 ",function-info" = "scripts.function_info:main"
 ",rename-json" = "scripts.rename_json:main"
+",json-schema" = "scripts.getschema:main"
 
 [tool.pdm]
 distribution = true
