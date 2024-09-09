@@ -26,3 +26,6 @@ Requirements:
 Scripts should be named with a lead `,` (e.g. `,ntok`) so that they are easy to find in
 the shell.
 
+## License
+
+This project is licensed under the GPL version 3 or later.
