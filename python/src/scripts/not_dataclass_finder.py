@@ -70,7 +70,9 @@ def find_python_files(directory: Path) -> Iterable[Path]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("dirs", type=Path, nargs="+", help="Directory to search")
     args = parser.parse_args()
 
