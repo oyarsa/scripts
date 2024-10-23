@@ -166,7 +166,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument("dirs", type=Path, nargs="+", help="Directory to search")
+    parser.add_argument(
+        "dirs", type=Path, nargs="*", default=[Path.cwd()], help="Directory to search"
+    )
     parser.add_argument(
         "--verbose",
         "-v",
