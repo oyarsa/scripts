@@ -2,9 +2,8 @@
 
 import argparse
 import json
-from typing import TypeAlias
 
-Json: TypeAlias = float | int | str | bool | None | list["Json"] | dict[str, "Json"]
+type Json = float | int | str | bool | None | list[Json] | dict[str, Json]
 
 
 def merge_schemas(schemas: list[Json]) -> list[Json]:
