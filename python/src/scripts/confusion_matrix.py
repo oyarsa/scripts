@@ -10,7 +10,7 @@ import json
 from collections import defaultdict
 from typing import Any
 
-import pandas as pd
+import pandas as pd  # type: ignore
 from beartype.door import is_bearable
 
 
