@@ -34,7 +34,7 @@ def main(
     """
     try:
         show_frequencies(input_path, key)
-    except json.JSONDecodeError | KeyError as e:
+    except (json.JSONDecodeError, KeyError) as e:
         typer.secho(f"Error: {e}", fg=typer.colors.RED)
 
 
