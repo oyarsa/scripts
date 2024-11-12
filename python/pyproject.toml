@@ -71,6 +71,7 @@ ignore = [
     "E501",     # Line too long (let Black take care of this)
     "TRY003",   # Long messages outside exception class
     "SIM108",   # Use ternary operation instead of if-else block
+    "ISC001",   # Conflicts with formatter
 ]
 
 [tool.pyright]
