@@ -17,6 +17,8 @@ import json
 from dataclasses import dataclass
 from typing import TextIO
 
+from scripts.util import HelpOnErrorArgumentParser
+
 
 @dataclass(frozen=True)
 class Args:
@@ -26,9 +28,7 @@ class Args:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "input_file",
         type=argparse.FileType("r"),

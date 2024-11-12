@@ -3,6 +3,8 @@
 import argparse
 import json
 
+from scripts.util import HelpOnErrorArgumentParser
+
 type Json = float | int | str | bool | None | list[Json] | dict[str, Json]
 
 
@@ -32,9 +34,7 @@ def get_schema(data: Json) -> Json:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument("input", type=argparse.FileType(), help="Input JSON data file")
     parser.add_argument(
         "output", type=argparse.FileType("w"), help="Output JSON schema file"

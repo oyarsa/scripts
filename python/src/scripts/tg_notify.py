@@ -20,6 +20,8 @@ from typing import BinaryIO, NoReturn
 
 import requests
 
+from scripts.util import HelpOnErrorArgumentParser
+
 level_emojis = {
     "info": "ℹ️",  # noqa: RUF001
     "warning": "⚠️",
@@ -92,7 +94,7 @@ def send_document(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "--config",
         type=Path,

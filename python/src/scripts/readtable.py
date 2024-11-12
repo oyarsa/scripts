@@ -2,6 +2,8 @@ import argparse
 import json
 from typing import Any, TextIO
 
+from scripts.util import HelpOnErrorArgumentParser
+
 
 def fit_length(
     data: list[dict[str, Any]], n: int, fill_value: Any = None
@@ -59,9 +61,7 @@ def parse_data(input: TextIO, separator: str) -> list[dict[str, Any]]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Parse data columnar and output as JSON."
-    )
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "input",
         type=argparse.FileType("r"),

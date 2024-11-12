@@ -9,6 +9,8 @@ from typing import Any
 
 from beartype.door import is_bearable
 
+from scripts.util import HelpOnErrorArgumentParser
+
 
 def generate_table(headers: list[str], values: list[list[Any]]) -> str:
     """Generate table from headers and values.
@@ -43,7 +45,7 @@ def generate_table(headers: list[str], values: list[list[Any]]) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "file",
         type=argparse.FileType(),

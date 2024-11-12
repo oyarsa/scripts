@@ -10,6 +10,8 @@ from typing import Any
 
 from beartype.door import is_bearable
 
+from scripts.util import HelpOnErrorArgumentParser
+
 
 @dataclass
 class JSONKeyInfo:
@@ -85,7 +87,7 @@ def get_path(data: dict[str, Any], path: str) -> Any:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "files",
         type=argparse.FileType("r"),

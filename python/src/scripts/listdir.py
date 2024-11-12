@@ -1,6 +1,7 @@
-import argparse
 from datetime import datetime
 from pathlib import Path
+
+from scripts.util import HelpOnErrorArgumentParser
 
 
 def modified_time(path: Path) -> datetime:
@@ -127,7 +128,7 @@ def pretty_print_entries(paths: list[Path], reverse: bool = False) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Pretty print directory entries.")
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "paths",
         type=Path,

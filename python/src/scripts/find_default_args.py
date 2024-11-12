@@ -1,9 +1,12 @@
 # pyright: strict
 """Find functions and methods in a Python script whose parameters have default values."""
+
 import argparse
 import ast
 from collections.abc import Iterable
 from dataclasses import dataclass
+
+from scripts.util import HelpOnErrorArgumentParser
 
 
 @dataclass
@@ -84,7 +87,7 @@ def render_result(functions: Iterable[FuncInfo], func_only: bool) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "file", type=argparse.FileType(), help="Path to the Python script to analyse"
     )

@@ -4,6 +4,8 @@ import argparse
 
 import openai
 
+from scripts.util import HelpOnErrorArgumentParser
+
 
 def generate_text(client: openai.OpenAI, model: str, prompt: str) -> str:
     response = client.chat.completions.create(
@@ -18,10 +20,7 @@ def generate_text(client: openai.OpenAI, model: str, prompt: str) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description=__doc__.splitlines()[0],
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "--prompt",
         type=argparse.FileType("r"),

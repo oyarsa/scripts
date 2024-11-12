@@ -11,9 +11,11 @@ from typing import BinaryIO
 
 import tomli
 
+from scripts.util import HelpOnErrorArgumentParser
+
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "file1",
         type=argparse.FileType("rb"),

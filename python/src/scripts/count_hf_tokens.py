@@ -17,9 +17,11 @@ from typing import Any, cast
 
 from beartype.door import is_bearable
 
+from scripts.util import HelpOnErrorArgumentParser
+
 # Disable "None of PyTorch, TensorFlow >= 2.0, or Flax have been found." warning.
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
-from transformers import AutoTokenizer  # noqa: E402
+from transformers import AutoTokenizer
 
 
 def longest_sequence(
@@ -40,9 +42,7 @@ def longest_sequence(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawTextHelpFormatter
-    )
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "input",
         type=argparse.FileType("r"),

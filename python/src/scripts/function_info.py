@@ -13,6 +13,8 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any, TextIO
 
+from scripts.util import HelpOnErrorArgumentParser
+
 
 def get_function_info(node: ast.FunctionDef, path: Path) -> dict[str, Any]:
     if docstring := ast.get_docstring(node):
@@ -82,10 +84,7 @@ def process_directory(directory: Path) -> list[dict[str, Any]]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "dir", type=Path, help="The directory to process", nargs="?", default=Path(".")
     )

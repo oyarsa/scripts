@@ -13,6 +13,8 @@ from typing import Any
 import pandas as pd  # type: ignore
 from beartype.door import is_bearable
 
+from scripts.util import HelpOnErrorArgumentParser
+
 
 def create_confusion_table(
     data: list[dict[str, Any]], field1: str, field2: str
@@ -40,7 +42,7 @@ def create_confusion_table(
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument("file", type=argparse.FileType(), help="Path to the JSON file")
     parser.add_argument("field1", type=str, help="Name of the first field")
     parser.add_argument("field2", type=str, help="Name of the second field")

@@ -6,7 +6,6 @@ The output JSON file can be provided as an argument or piped out through stdout.
 A random seed can be provided to ensure reproducibility.
 """
 
-import argparse
 import json
 import random
 import sys
@@ -15,9 +14,11 @@ from typing import Any
 
 from beartype.door import is_bearable
 
+from scripts.util import HelpOnErrorArgumentParser
+
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "input",
         type=Path,

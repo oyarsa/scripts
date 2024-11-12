@@ -7,13 +7,14 @@ it cannot track the inheritance chains, so if A <: BaseModel and B <: A, A won't
 but B will.
 """
 
-import argparse
 import ast
 import subprocess
 import sys
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
+
+from scripts.util import HelpOnErrorArgumentParser
 
 
 @dataclass(frozen=True)
@@ -163,9 +164,7 @@ def find_python_files(directory: Path) -> Iterable[Path]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "dirs", type=Path, nargs="*", default=[Path.cwd()], help="Directory to search"
     )

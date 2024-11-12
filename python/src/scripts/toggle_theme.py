@@ -21,6 +21,8 @@ from pathlib import Path
 
 import yaml
 
+from scripts.util import HelpOnErrorArgumentParser
+
 config_files = {
     # Neovim
     "~/.config/nvim/lua/config/plugins.lua": {
@@ -105,10 +107,7 @@ def replace_in_file(file_path: Path, old: str, new: str) -> int:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description=__doc__.splitlines()[0],
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "--warn-multiple",
         action=argparse.BooleanOptionalAction,

@@ -1,7 +1,8 @@
-import argparse
 import ast
 import os
 from pathlib import Path
+
+from scripts.util import HelpOnErrorArgumentParser
 
 
 def is_stdlib_module(module_name: str) -> bool:
@@ -41,9 +42,7 @@ def get_imported_packages(file_path: Path) -> set[str]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="List imported packages in Python files."
-    )
+    parser = HelpOnErrorArgumentParser(__doc__)
     parser.add_argument(
         "directory",
         nargs="?",
