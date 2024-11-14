@@ -40,6 +40,7 @@ license = {text = "GPL-3.0-or-later"}
 ",rename-json" = "scripts.rename_json:main"
 ",json-schema" = "scripts.getschema:main"
 ",jfreq" = "scripts.json_freq:app"
+",blame" = "scripts.blame:app"
 
 [tool.uv]
 dev-dependencies = [
