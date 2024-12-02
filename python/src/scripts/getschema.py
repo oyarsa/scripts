@@ -25,8 +25,6 @@ def get_schema(data: Json) -> Json:
             return "string"
         case None:
             return "null"
-        case []:
-            return "null"
         case list(items):
             return merge_schemas([get_schema(item) for item in items])
         case dict(d):
