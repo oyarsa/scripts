@@ -35,7 +35,10 @@ def main() -> None:
         "--seed",
         type=int,
         default=0,
-        help="Random seed used for shuffling. Default: %(default)s.",
+        help="Random seed used for shuffling.",
+    )
+    parser.add_argument(
+        "-k", type=int, help="Size of the sample to draw from the dataset."
     )
     args = parser.parse_args()
 
@@ -48,7 +51,10 @@ def main() -> None:
         raise ValueError("Invalid JSON format. Expected a list.")
 
     random.seed(args.seed)
-    random.shuffle(data)
+    if args.k:
+        data = random.sample(data, k=args.k)
+    else:
+        random.shuffle(data)
 
     if args.output is None:
         json.dump(data, sys.stdout, indent=2)
