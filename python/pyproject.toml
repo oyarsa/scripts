@@ -1,6 +1,6 @@
 [project]
 name = "scripts"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
     {name = "Italo Silva", email = "italo@maleldil.com"},
 ]
@@ -41,6 +41,7 @@ license = {text = "GPL-3.0-or-later"}
 ",json-schema" = "scripts.getschema:main"
 ",jfreq" = "scripts.json_freq:app"
 ",blame" = "scripts.blame:app"
+",jhead" = "scripts.json_head:app"
 
 [tool.uv]
 dev-dependencies = [
