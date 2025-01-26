@@ -32,7 +32,6 @@ license = {text = "GPL-3.0-or-later"}
 ",readtable" = "scripts.readtable:main"
 ",count-hf-tokens" = "scripts.count_hf_tokens:main"
 ",findimports" = "scripts.find_imports:main"
-",toml2json" = "scripts.toml2json:main"
 ",matchdeps" = "scripts.match_deps:main"
 ",toggle-theme" = "scripts.toggle_theme:main"
 ",function-info" = "scripts.function_info:main"
